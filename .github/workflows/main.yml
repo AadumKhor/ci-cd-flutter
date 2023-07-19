@@ -41,17 +41,22 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
-          bundler-cache: true  # 'bundle install' will run automatically
+      - name: Install dependencies
+        working-directory: ./android
+        run: |
+          bundle config set path 'vendor/bundle'
+          bundle install
       - name: Install Fastlane
         run: |
           gem install --user-install fastlane
           echo 'export PATH="$HOME/.gem/ruby/3.2.2/bin:$PATH"' >> $HOME/.bashrc
           source $HOME/.bashrc
       - name: Distribute the app through Firebase App Distribution
-        working-directory: ./android  # Add this line
+        working-directory: ./android
         run: |
           bundle exec fastlane firebase_deploy
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_GROUP: ${{ secrets.FIREBASE_GROUP }}
+    
