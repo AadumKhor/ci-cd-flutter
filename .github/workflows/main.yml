@@ -41,14 +41,15 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 3.0
           bundler-cache: true  # 'bundle install' will run automatically
       - name: Install Fastlane
         run: |
+          cd android
           gem install --user-install fastlane
       - name: Distribute the app through Firebase App Distribution
         run: |
-          ~/.gem/ruby/2.6.0/bin/fastlane beta
+          ~/.gem/ruby/3.0.0/bin/fastlane beta
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
