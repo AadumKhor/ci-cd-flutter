@@ -36,10 +36,8 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    # needs: build
     steps:
       - uses: actions/checkout@v2
-      - run: cd android
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.2.2
@@ -50,6 +48,7 @@ jobs:
           echo 'export PATH="$HOME/.gem/ruby/3.2.2/bin:$PATH"' >> $HOME/.bashrc
           source $HOME/.bashrc
       - name: Distribute the app through Firebase App Distribution
+        working-directory: ./android  # Add this line
         run: |
           bundle exec fastlane firebase_deploy
         env:
