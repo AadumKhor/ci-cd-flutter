@@ -51,7 +51,7 @@ jobs:
       - name: Distribute the app through Firebase App Distribution
         run: |
           cd android
-          fastlane beta
+          fastlane firebase_deploy
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
