@@ -41,12 +41,12 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
-          distribution: "adopt"
-          java-version: "11"
+          distribution: 'adopt'
+          java-version: '11'
       - name: Install Fastlane
         run: |
           gem install bundler
-          bundle install --jobs=4 --retry=3
+          bundle install --jobs=4 --retry=3 --path vendor/bundle
       - name: Distribute the app through Firebase App Distribution
         run: |
           bundle exec fastlane beta
