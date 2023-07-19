@@ -39,17 +39,16 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+      - uses: ruby/setup-ruby@v1
         with:
-          distribution: 'adopt'
-          java-version: '11'
+          ruby-version: 2.6
+          bundler-cache: true  # 'bundle install' will run automatically
       - name: Install Fastlane
         run: |
-          gem install bundler
-          bundle install --jobs=4 --retry=3 --path vendor/bundle
+          gem install --user-install fastlane
       - name: Distribute the app through Firebase App Distribution
         run: |
-          bundle exec fastlane beta
+          ~/.gem/ruby/2.6.0/bin/fastlane beta
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
