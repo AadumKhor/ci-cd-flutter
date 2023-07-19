@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     # needs: build
     steps:
+      - run: cd android
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
         with:
@@ -50,7 +51,6 @@ jobs:
           source $HOME/.bashrc
       - name: Distribute the app through Firebase App Distribution
         run: |
-          cd android
           bundle exec fastlane firebase_deploy
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
