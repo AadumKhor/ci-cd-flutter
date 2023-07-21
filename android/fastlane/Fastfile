@@ -18,10 +18,17 @@ default_platform(:android)
 platform :android do
   desc "Deploy to Firebase"
   lane :firebase_deploy do
+    latest_release = firebase_app_distribution_get_latest_release(
+      app: ENV["FIREBASE_APP_ID"]
+    )
+    release_notes = changelog_from_git_commits(
+      between: ['HEAD~1', 'HEAD'], 
+    )
+    increment_version_code({ version_code: latest_release[:buildVersion].to_i + 1 })  
     begin
     firebase_app_distribution(
       groups: "alpha",
-      release_notes: "New version",
+      release_notes: release_notes,
       apk_path: "../build/app/outputs/flutter-apk/app-release.apk",
       firebase_cli_path: "/usr/local/bin/firebase",
       firebase_cli_token: ENV['FIREBASE_TOKEN'],

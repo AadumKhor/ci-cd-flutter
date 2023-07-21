@@ -7,27 +7,46 @@ on:
 
 jobs:
   test:
-    name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      # checkout current code
+      - uses: actions/checkout@v3
+      # setup flutter for further jobs
+      - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.10.6" # specify the Flutter version
-      - run: flutter pub get
-      - run: flutter test # run Flutter tests
+          channel: 'stable'
+      # check if flutter is available
+      - run: flutter --version
+
+      # install flutter packages
+      - name: Install dependencies
+        run: flutter pub get
+
+      # verify code formatting 
+      - name: Verify Formatting
+        run: dart format --output=none --set-exit-if-changed .
+      
+      # dart linter
+      - name: Flutter Analyze
+        run: flutter analyze
+      
+      # run UI tests
+      - name: Flutter Tests
+        run: flutter test
+
   build:
     name: Build
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v3
         with:
           flutter-version: "3.10.6" # specify the Flutter version
       - run: flutter pub get
       - run: flutter build apk # build APK
-      - uses: actions/upload-artifact@v2 # upload build artifact
+      - uses: actions/upload-artifact@v3 # upload build artifact
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -37,8 +56,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
         with:
           name: release-apk
           path: ./build/app/outputs/flutter-apk/ # download the artifact to this directory
