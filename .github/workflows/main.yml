@@ -12,26 +12,39 @@ jobs:
     steps:
       # checkout current code
       - uses: actions/checkout@v3
+
       # setup flutter for further jobs
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.10.6" # specify the Flutter version
-          channel: 'stable'
+          channel: "stable"
+
       # check if flutter is available
       - run: flutter --version
+
+      # Cache .pub-cache and .dart_tool directory
+      - name: Cache Flutter packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
 
       # install flutter packages
       - name: Install dependencies
         run: flutter pub get
 
-      # verify code formatting 
+      # verify code formatting
       - name: Verify Formatting
         run: dart format --output=none --set-exit-if-changed .
-      
+
       # dart linter
       - name: Flutter Analyze
         run: flutter analyze
-      
+
       # run UI tests
       - name: Flutter Tests
         run: flutter test
@@ -45,8 +58,20 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.10.6" # specify the Flutter version
+
+      # Cache .pub-cache and .dart_tool directory
+      - name: Cache Flutter packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            .dart_tool
+          key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
+
       - run: flutter pub get # get flutter dependencies
-      - name: "Build APK" 
+      - name: "Build APK"
         run: flutter build apk # build APK
       - uses: actions/upload-artifact@v3 # upload build artifact
         with:
